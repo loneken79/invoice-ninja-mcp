@@ -6,7 +6,7 @@ When I want to use this MCP server with Claude, I want a simple one-liner instal
 
 ## Success Criteria
 
-- Installable via `npx invoice-ninja-mcp` one-liner in MCP config
+- Installable via `npx invoice-ninja-mcp-server` one-liner in MCP config
 - Works with Claude Desktop, Claude Code, and Cursor
 - API credentials passed via environment variables in MCP config (not hardcoded)
 - README includes copy-pasteable config for all three clients
@@ -22,7 +22,7 @@ The package is published to npm with a `bin` field pointing to `dist/index.js`. 
   "mcpServers": {
     "invoice-ninja": {
       "command": "npx",
-      "args": ["-y", "invoice-ninja-mcp"],
+      "args": ["-y", "invoice-ninja-mcp-server"],
       "env": {
         "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
         "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
@@ -46,19 +46,13 @@ The package is published to npm with a `bin` field pointing to `dist/index.js`. 
 
 ## Current State
 
+- Published to npm as `invoice-ninja-mcp-server`
 - `package.json` has `bin` field pointing to `dist/index.js`
 - `#!/usr/bin/env node` shebang in `src/index.ts`
 - Build produces executable `dist/index.js`
-- README has Claude Desktop and Claude Code instructions
-- **Not yet published to npm** -- currently requires absolute path to `dist/index.js`
-- README currently uses `node /ABSOLUTE/PATH/...` instead of `npx`
+- README uses `npx -y invoice-ninja-mcp-server` with configs for Claude Desktop, Claude Code, and Cursor
+- Local development instructions in separate section
 
-## What's Needed
-
-1. Publish to npm as `invoice-ninja-mcp`
-2. Update README to use `npx -y invoice-ninja-mcp` as the primary install method
-3. Add Cursor config example to README
-4. Keep local development instructions as secondary section
 
 ## Out of Scope
 

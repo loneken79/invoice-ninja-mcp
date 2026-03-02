@@ -17,7 +17,8 @@
       "Bash(uv run python3:*)",
       "WebFetch(domain:mcp.pipedream.com)",
       "WebFetch(domain:www.analytics-model.com)",
-      "Bash(npm search:*)"
+      "Bash(npm search:*)",
+      "Bash(nvm alias:*)"
     ]
   }
 }
