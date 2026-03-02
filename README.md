@@ -4,7 +4,10 @@ An MCP (Model Context Protocol) server for [Invoice Ninja](https://invoiceninja.
 
 ## Features
 
-25 tools across 6 categories:
+26 tools across 7 categories:
+
+**System**
+- `test-connection` - Verify API credentials and instance connectivity
 
 **Invoices** (primary)
 - `list-invoices` - List/filter/search invoices
@@ -63,8 +66,8 @@ Add to your Claude Desktop config file:
 {
   "mcpServers": {
     "invoice-ninja": {
-      "command": "node",
-      "args": ["/ABSOLUTE/PATH/TO/invoice-ninja-mcp/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "invoice-ninja-mcp"],
       "env": {
         "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
         "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
@@ -82,7 +85,26 @@ Then restart Claude Desktop.
 claude mcp add invoice-ninja \
   -e INVOICE_NINJA_URL=https://your-instance.invoicing.co \
   -e INVOICE_NINJA_API_TOKEN=your_api_token_here \
-  -- node /ABSOLUTE/PATH/TO/invoice-ninja-mcp/dist/index.js
+  -- npx -y invoice-ninja-mcp
+```
+
+### Cursor
+
+Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for global):
+
+```json
+{
+  "mcpServers": {
+    "invoice-ninja": {
+      "command": "npx",
+      "args": ["-y", "invoice-ninja-mcp"],
+      "env": {
+        "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
+        "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
+      }
+    }
+  }
+}
 ```
 
 ## Development
@@ -133,10 +155,10 @@ Then point your MCP config to the local build:
 
 ## Example Workflow
 
-1. "List my clients" → `list-clients`
-2. "Create an invoice for Acme Corp with 10 hours of consulting at $150/hr" → `list-clients` (find ID) → `create-invoice`
-3. "Send that invoice" → `send-invoice-email`
-4. "Mark it as paid" → `bulk-invoice-action` with `mark_paid`
+1. "List my clients" -> `list-clients`
+2. "Create an invoice for Acme Corp with 10 hours of consulting at $150/hr" -> `list-clients` (find ID) -> `create-invoice`
+3. "Send that invoice" -> `send-invoice-email`
+4. "Mark it as paid" -> `bulk-invoice-action` with `mark_paid`
 
 ## License
 

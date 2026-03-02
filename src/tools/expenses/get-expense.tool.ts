@@ -4,7 +4,7 @@ import { apiGet } from "../../client/api-client.js";
 
 const GetExpenseTool = createTool(
   "get-expense",
-  "Get a single expense by ID from Invoice Ninja.",
+  "Get a single expense by ID from Invoice Ninja. Returns full details including linked client, vendor, invoice, and notes.",
   {
     id: z.string().describe("The hashed expense ID"),
   },

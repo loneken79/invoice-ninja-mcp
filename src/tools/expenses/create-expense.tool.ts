@@ -4,7 +4,7 @@ import { apiPost } from "../../client/api-client.js";
 
 const CreateExpenseTool = createTool(
   "create-expense",
-  "Create a new expense in Invoice Ninja.",
+  "Create a new expense record in Invoice Ninja. Optionally link to a client, vendor, or invoice for billable expense tracking.",
   {
     amount: z.number().describe("Expense amount"),
     client_id: z.string().optional().describe("Link to client hashed ID"),

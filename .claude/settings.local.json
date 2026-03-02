@@ -14,7 +14,10 @@
       "Bash(INVOICE_NINJA_URL=https://test.invoicing.co INVOICE_NINJA_API_TOKEN=test node:*)",
       "Bash(printf:*)",
       "Bash(INVOICE_NINJA_URL=\"http://invoiceninja-psoowokk8c8co8oo0kw8skws.5.161.109.133.sslip.io\" INVOICE_NINJA_API_TOKEN=\"jWDtf9WhxSNCBRUTVjGBlxWrwbWhhMOHiobur9iAmkXi6ezD3FGNSjGqY2aCW55U\" node:*)",
-      "Bash(uv run python3:*)"
+      "Bash(uv run python3:*)",
+      "WebFetch(domain:mcp.pipedream.com)",
+      "WebFetch(domain:www.analytics-model.com)",
+      "Bash(npm search:*)"
     ]
   }
 }

@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ToolDefinition } from "../helpers/types.js";
 
+import { SystemTools } from "./system/index.js";
 import { InvoiceTools } from "./invoices/index.js";
 import { ClientTools } from "./clients/index.js";
 import { ProductTools } from "./products/index.js";
@@ -15,6 +16,7 @@ function registerGroup(server: McpServer, tools: Array<() => ToolDefinition>) {
 }
 
 export function registerAllTools(server: McpServer) {
+  registerGroup(server, SystemTools);
   registerGroup(server, InvoiceTools);
   registerGroup(server, ClientTools);
   registerGroup(server, ProductTools);
