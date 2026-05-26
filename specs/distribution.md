@@ -22,7 +22,7 @@ The package is published to npm with a `bin` field pointing to `dist/index.js`. 
   "mcpServers": {
     "invoice-ninja": {
       "command": "npx",
-      "args": ["-y", "github:loneken79/invoice-ninja-mcp"],
+      "args": ["-y", "github:loneken79/invoice-ninja-mcp#v1.0.0"],
       "env": {
         "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
         "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
