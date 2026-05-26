@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiPost } from "../../client/api-client.js";
+import { hashedIdArray } from "../../helpers/validation.js";
 
 const BulkQuoteActionTool = createTool(
   "bulk-quote-action",
   "Perform a bulk action on one or more quotes. Actions: approve, convert_to_invoice (creates an invoice from the quote), mark_sent, archive, restore, delete.",
   {
-    ids: z.array(z.string()).min(1).describe("Array of hashed quote IDs"),
+    ids: hashedIdArray.describe("Array of hashed quote IDs (max 100)"),
     action: z
       .enum(["approve", "convert_to_invoice", "mark_sent", "archive", "restore", "delete"])
       .describe("The action to perform"),

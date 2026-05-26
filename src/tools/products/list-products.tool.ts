@@ -1,14 +1,15 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiGet } from "../../client/api-client.js";
+import { perPage, pageNumber, searchString } from "../../helpers/validation.js";
 
 const ListProductsTool = createTool(
   "list-products",
   "List products in Invoice Ninja. Products define reusable line items with preset prices. Use product_key values when creating invoice line items.",
   {
-    page: z.number().optional().describe("Page number (default: 1)"),
-    per_page: z.number().optional().describe("Results per page (default: 20)"),
-    search: z.string().optional().describe("Search products by name or notes"),
+    page: pageNumber,
+    per_page: perPage,
+    search: searchString.describe("Search products by name or notes"),
   },
   async ({ page, per_page, search }) => {
     const params: Record<string, string> = {

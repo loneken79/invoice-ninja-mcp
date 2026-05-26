@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiGet } from "../../client/api-client.js";
+import { hashedId } from "../../helpers/validation.js";
 
 const GetClientTool = createTool(
   "get-client",
   "Get a single client by ID from Invoice Ninja. Returns full client details including contacts, addresses, and settings.",
   {
-    id: z.string().describe("The hashed client ID"),
+    id: hashedId.describe("The hashed client ID"),
   },
   async ({ id }) => {
     const response = await apiGet<{ data: Record<string, unknown> }>(`/clients/${id}`);

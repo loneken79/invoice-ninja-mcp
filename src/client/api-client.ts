@@ -1,5 +1,9 @@
 import { ApiResponse } from "../helpers/types.js";
 import { formatError } from "../helpers/format-error.js";
+import { validateBaseUrl, validatePathSegment } from "../helpers/validation.js";
+
+/** Request timeout in milliseconds (30 seconds) */
+const REQUEST_TIMEOUT_MS = 30_000;
 
 interface ApiClientConfig {
   baseUrl: string;
@@ -14,10 +18,28 @@ function getConfig(): ApiClientConfig {
       "INVOICE_NINJA_URL and INVOICE_NINJA_API_TOKEN environment variables must be set. Check your MCP configuration.",
     );
   }
+
+  const sanitizedUrl = baseUrl.replace(/\/+$/, "");
+  validateBaseUrl(sanitizedUrl);
+
   return {
-    baseUrl: baseUrl.replace(/\/+$/, ""),
+    baseUrl: sanitizedUrl,
     apiToken,
   };
+}
+
+/**
+ * Validates that all dynamic segments in a path are safe (alphanumeric, hyphens, underscores).
+ * Prevents path traversal attacks (e.g., ../../admin).
+ */
+function validatePath(path: string): void {
+  // Split path into segments and validate each dynamic part
+  const segments = path.split("/").filter(Boolean);
+  for (const segment of segments) {
+    if (!validatePathSegment(segment)) {
+      throw new Error(`Invalid path segment: "${segment}". Only alphanumeric characters, hyphens, and underscores are allowed.`);
+    }
+  }
 }
 
 async function apiRequest<T>(
@@ -28,6 +50,10 @@ async function apiRequest<T>(
 ): Promise<ApiResponse<T>> {
   try {
     const config = getConfig();
+
+    // Validate path to prevent traversal attacks
+    validatePath(path);
+
     let url = `${config.baseUrl}/api/v1${path}`;
 
     if (params) {
@@ -48,6 +74,7 @@ async function apiRequest<T>(
         "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/json",
       },
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
     });
 
@@ -74,10 +101,23 @@ async function apiRequest<T>(
     ) {
       return { result: null, isError: true, error: error.message };
     }
+    if (error instanceof Error && error.name === "TimeoutError") {
+      return {
+        result: null,
+        isError: true,
+        error: "Request timed out. The Invoice Ninja server did not respond in time.",
+      };
+    }
+    if (
+      error instanceof Error &&
+      (error.message.includes("Invalid path segment") || error.message.includes("must use HTTPS"))
+    ) {
+      return { result: null, isError: true, error: error.message };
+    }
     return {
       result: null,
       isError: true,
-      error: `Failed to connect to Invoice Ninja: ${error instanceof Error ? error.message : String(error)}`,
+      error: "Failed to connect to Invoice Ninja. Please check your configuration and network.",
     };
   }
 }

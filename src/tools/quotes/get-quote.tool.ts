@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiGet } from "../../client/api-client.js";
+import { hashedId } from "../../helpers/validation.js";
 
 const GetQuoteTool = createTool(
   "get-quote",
   "Get a single quote by ID from Invoice Ninja. Returns full quote details including line items and client information.",
   {
-    id: z.string().describe("The hashed quote ID"),
+    id: hashedId.describe("The hashed quote ID"),
   },
   async ({ id }) => {
     const response = await apiGet<{ data: Record<string, unknown> }>(`/quotes/${id}`, {

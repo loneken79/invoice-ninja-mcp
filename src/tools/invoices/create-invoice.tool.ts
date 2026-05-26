@@ -1,37 +1,38 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiPost } from "../../client/api-client.js";
+import { hashedId, dateString, optionalBoundedText, MAX_LINE_ITEMS } from "../../helpers/validation.js";
 
 const lineItemSchema = z.object({
-  product_key: z.string().optional().describe("Product name/key from list-products"),
-  notes: z.string().optional().describe("Line item description"),
+  product_key: z.string().max(200).optional().describe("Product name/key from list-products"),
+  notes: z.string().max(5000).optional().describe("Line item description"),
   cost: z.number().describe("Unit price"),
-  quantity: z.number().describe("Quantity"),
-  tax_name1: z.string().optional().describe("Tax name e.g. GST"),
-  tax_rate1: z.number().optional().describe("Tax rate percentage e.g. 10"),
-  discount: z.number().optional().describe("Line discount"),
+  quantity: z.number().min(0).describe("Quantity"),
+  tax_name1: z.string().max(200).optional().describe("Tax name e.g. GST"),
+  tax_rate1: z.number().min(0).max(100).optional().describe("Tax rate percentage e.g. 10"),
+  discount: z.number().min(0).optional().describe("Line discount"),
 });
 
 const CreateInvoiceTool = createTool(
   "create-invoice",
   "Create a new draft invoice in Invoice Ninja. Requires a client_id (use list-clients to find it) and at least one line item with cost and quantity.",
   {
-    client_id: z.string().describe("The client's hashed ID. Use list-clients to find it."),
-    line_items: z.array(lineItemSchema).min(1).describe("Invoice line items"),
-    date: z.string().optional().describe("Invoice date YYYY-MM-DD (default: today)"),
-    due_date: z.string().optional().describe("Due date YYYY-MM-DD"),
-    number: z.string().optional().describe("Custom invoice number (auto-generated if omitted)"),
-    po_number: z.string().optional().describe("Purchase order number"),
-    discount: z.number().optional().describe("Overall invoice discount"),
+    client_id: hashedId.describe("The client's hashed ID. Use list-clients to find it."),
+    line_items: z.array(lineItemSchema).min(1).max(MAX_LINE_ITEMS).describe("Invoice line items"),
+    date: dateString.optional().describe("Invoice date YYYY-MM-DD (default: today)"),
+    due_date: dateString.optional().describe("Due date YYYY-MM-DD"),
+    number: z.string().max(200).optional().describe("Custom invoice number (auto-generated if omitted)"),
+    po_number: z.string().max(200).optional().describe("Purchase order number"),
+    discount: z.number().min(0).optional().describe("Overall invoice discount"),
     is_amount_discount: z.boolean().optional().describe("true = fixed amount discount, false = percentage"),
-    partial: z.number().optional().describe("Partial/deposit amount"),
-    partial_due_date: z.string().optional().describe("Deposit due date YYYY-MM-DD"),
-    terms: z.string().optional().describe("Invoice terms"),
-    footer: z.string().optional().describe("Invoice footer text"),
-    public_notes: z.string().optional().describe("Notes visible to client"),
-    private_notes: z.string().optional().describe("Internal notes"),
-    tax_name1: z.string().optional().describe("Invoice-level tax name"),
-    tax_rate1: z.number().optional().describe("Invoice-level tax rate percentage"),
+    partial: z.number().min(0).optional().describe("Partial/deposit amount"),
+    partial_due_date: dateString.optional().describe("Deposit due date YYYY-MM-DD"),
+    terms: optionalBoundedText(10000).describe("Invoice terms"),
+    footer: optionalBoundedText(10000).describe("Invoice footer text"),
+    public_notes: optionalBoundedText(10000).describe("Notes visible to client"),
+    private_notes: optionalBoundedText(10000).describe("Internal notes"),
+    tax_name1: z.string().max(200).optional().describe("Invoice-level tax name"),
+    tax_rate1: z.number().min(0).max(100).optional().describe("Invoice-level tax rate percentage"),
   },
   async (params) => {
     const response = await apiPost<{ data: Record<string, unknown> }>("/invoices", params);
