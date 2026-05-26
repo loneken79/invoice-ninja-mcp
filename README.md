@@ -67,7 +67,7 @@ Add to your Claude Desktop config file:
   "mcpServers": {
     "invoice-ninja": {
       "command": "npx",
-      "args": ["-y", "invoice-ninja-mcp-server"],
+      "args": ["-y", "github:loneken79/invoice-ninja-mcp"],
       "env": {
         "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
         "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
@@ -85,7 +85,7 @@ Then restart Claude Desktop.
 claude mcp add invoice-ninja \
   -e INVOICE_NINJA_URL=https://your-instance.invoicing.co \
   -e INVOICE_NINJA_API_TOKEN=your_api_token_here \
-  -- npx -y invoice-ninja-mcp-server
+  -- npx -y github:loneken79/invoice-ninja-mcp
 ```
 
 ### Cursor
@@ -97,7 +97,7 @@ Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for glob
   "mcpServers": {
     "invoice-ninja": {
       "command": "npx",
-      "args": ["-y", "invoice-ninja-mcp-server"],
+      "args": ["-y", "github:loneken79/invoice-ninja-mcp"],
       "env": {
         "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
         "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
