@@ -74,15 +74,22 @@ export function validatePathSegment(segment: string): boolean {
  * Validates the base URL is using HTTPS (or localhost for development).
  */
 export function validateBaseUrl(url: string): void {
-  const lower = url.toLowerCase();
-  const isLocalDev =
-    lower.startsWith("http://localhost") ||
-    lower.startsWith("http://127.0.0.1") ||
-    lower.startsWith("http://[::1]");
-
-  if (!lower.startsWith("https://") && !isLocalDev) {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
     throw new Error(
-      "INVOICE_NINJA_URL must use HTTPS (or http://localhost for local development).",
+      "INVOICE_NINJA_URL must be a valid URL and must use HTTPS (or http://localhost for local development).",
+    );
+  }
+
+  const isLocalDev =
+    parsed.protocol === "http:" &&
+    (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1" || parsed.hostname === "::1");
+
+  if (parsed.protocol !== "https:" && !isLocalDev) {
+    throw new Error(
+      "INVOICE_NINJA_URL must be a valid URL and must use HTTPS (or http://localhost for local development).",
     );
   }
 }
