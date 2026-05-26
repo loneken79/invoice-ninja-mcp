@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiDelete } from "../../client/api-client.js";
+import { hashedId } from "../../helpers/validation.js";
 
 const DeleteInvoiceTool = createTool(
   "delete-invoice",
   "Delete an invoice from Invoice Ninja. This soft-deletes the invoice (it can be restored from the Invoice Ninja UI).",
   {
-    id: z.string().describe("The hashed invoice ID"),
+    id: hashedId.describe("The hashed invoice ID"),
   },
   async ({ id }) => {
     const response = await apiDelete<Record<string, unknown>>(`/invoices/${id}`);

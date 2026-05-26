@@ -1,36 +1,37 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiPost } from "../../client/api-client.js";
+import { hashedId, dateString, optionalBoundedText, MAX_LINE_ITEMS } from "../../helpers/validation.js";
 
 const lineItemSchema = z.object({
-  product_key: z.string().optional().describe("Product name/key"),
-  notes: z.string().optional().describe("Line item description"),
+  product_key: z.string().max(200).optional().describe("Product name/key"),
+  notes: z.string().max(5000).optional().describe("Line item description"),
   cost: z.number().describe("Unit price"),
-  quantity: z.number().describe("Quantity"),
-  tax_name1: z.string().optional().describe("Tax name"),
-  tax_rate1: z.number().optional().describe("Tax rate percentage"),
-  discount: z.number().optional().describe("Line discount"),
+  quantity: z.number().min(0).describe("Quantity"),
+  tax_name1: z.string().max(200).optional().describe("Tax name"),
+  tax_rate1: z.number().min(0).max(100).optional().describe("Tax rate percentage"),
+  discount: z.number().min(0).optional().describe("Line discount"),
 });
 
 const CreateQuoteTool = createTool(
   "create-quote",
   "Create a new quote in Invoice Ninja. Quotes have the same line item structure as invoices and can be converted to invoices later.",
   {
-    client_id: z.string().describe("The client's hashed ID. Use list-clients to find it."),
-    line_items: z.array(lineItemSchema).min(1).describe("Quote line items"),
-    date: z.string().optional().describe("Quote date YYYY-MM-DD (default: today)"),
-    due_date: z.string().optional().describe("Valid until date YYYY-MM-DD"),
-    number: z.string().optional().describe("Custom quote number"),
-    po_number: z.string().optional().describe("Purchase order number"),
-    discount: z.number().optional().describe("Overall quote discount"),
+    client_id: hashedId.describe("The client's hashed ID. Use list-clients to find it."),
+    line_items: z.array(lineItemSchema).min(1).max(MAX_LINE_ITEMS).describe("Quote line items"),
+    date: dateString.optional().describe("Quote date YYYY-MM-DD (default: today)"),
+    due_date: dateString.optional().describe("Valid until date YYYY-MM-DD"),
+    number: z.string().max(200).optional().describe("Custom quote number"),
+    po_number: z.string().max(200).optional().describe("Purchase order number"),
+    discount: z.number().min(0).optional().describe("Overall quote discount"),
     is_amount_discount: z.boolean().optional().describe("true = fixed amount, false = percentage"),
-    partial: z.number().optional().describe("Deposit amount"),
-    terms: z.string().optional().describe("Quote terms"),
-    footer: z.string().optional().describe("Quote footer text"),
-    public_notes: z.string().optional().describe("Notes visible to client"),
-    private_notes: z.string().optional().describe("Internal notes"),
-    tax_name1: z.string().optional().describe("Quote-level tax name"),
-    tax_rate1: z.number().optional().describe("Quote-level tax rate"),
+    partial: z.number().min(0).optional().describe("Deposit amount"),
+    terms: optionalBoundedText(10000).describe("Quote terms"),
+    footer: optionalBoundedText(10000).describe("Quote footer text"),
+    public_notes: optionalBoundedText(10000).describe("Notes visible to client"),
+    private_notes: optionalBoundedText(10000).describe("Internal notes"),
+    tax_name1: z.string().max(200).optional().describe("Quote-level tax name"),
+    tax_rate1: z.number().min(0).max(100).optional().describe("Quote-level tax rate"),
   },
   async (params) => {
     const response = await apiPost<{ data: Record<string, unknown> }>("/quotes", params);

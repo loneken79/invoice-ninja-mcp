@@ -1,20 +1,21 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiPost } from "../../client/api-client.js";
+import { hashedId, nonNegativeAmount, dateString, optionalBoundedText } from "../../helpers/validation.js";
 
 const CreateExpenseTool = createTool(
   "create-expense",
   "Create a new expense record in Invoice Ninja. Optionally link to a client, vendor, or invoice for billable expense tracking.",
   {
-    amount: z.number().describe("Expense amount"),
-    client_id: z.string().optional().describe("Link to client hashed ID"),
-    vendor_id: z.string().optional().describe("Link to vendor hashed ID"),
-    category_id: z.string().optional().describe("Expense category ID"),
-    date: z.string().optional().describe("Expense date YYYY-MM-DD"),
-    public_notes: z.string().optional().describe("Public notes"),
-    private_notes: z.string().optional().describe("Internal notes"),
-    currency_id: z.string().optional().describe("Currency ID"),
-    invoice_id: z.string().optional().describe("Link to invoice for billable expenses"),
+    amount: nonNegativeAmount.describe("Expense amount"),
+    client_id: hashedId.optional().describe("Link to client hashed ID"),
+    vendor_id: hashedId.optional().describe("Link to vendor hashed ID"),
+    category_id: hashedId.optional().describe("Expense category ID"),
+    date: dateString.optional().describe("Expense date YYYY-MM-DD"),
+    public_notes: optionalBoundedText(10000).describe("Public notes"),
+    private_notes: optionalBoundedText(10000).describe("Internal notes"),
+    currency_id: hashedId.optional().describe("Currency ID"),
+    invoice_id: hashedId.optional().describe("Link to invoice for billable expenses"),
   },
   async (params) => {
     const response = await apiPost<{ data: Record<string, unknown> }>("/expenses", params);

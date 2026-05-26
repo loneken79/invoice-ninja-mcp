@@ -1,15 +1,16 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiGet } from "../../client/api-client.js";
+import { hashedId, perPage, pageNumber, searchString } from "../../helpers/validation.js";
 
 const ListPaymentsTool = createTool(
   "list-payments",
   "List payments in Invoice Ninja. Shows payment records including which invoices they are applied to.",
   {
-    page: z.number().optional().describe("Page number (default: 1)"),
-    per_page: z.number().optional().describe("Results per page (default: 20)"),
-    client_id: z.string().optional().describe("Filter by client hashed ID"),
-    search: z.string().optional().describe("Search payments"),
+    page: pageNumber,
+    per_page: perPage,
+    client_id: hashedId.optional().describe("Filter by client hashed ID"),
+    search: searchString.describe("Search payments"),
   },
   async ({ page, per_page, client_id, search }) => {
     const params: Record<string, string> = {

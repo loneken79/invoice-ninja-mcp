@@ -1,14 +1,15 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiGet } from "../../client/api-client.js";
+import { perPage, pageNumber, searchString } from "../../helpers/validation.js";
 
 const ListClientsTool = createTool(
   "list-clients",
   "List clients in Invoice Ninja. Use the search parameter to find a client by name or email. Clients are needed to create invoices -- use the returned client ID.",
   {
-    page: z.number().optional().describe("Page number (default: 1)"),
-    per_page: z.number().optional().describe("Results per page (default: 20)"),
-    search: z.string().optional().describe("Search by name, email, or id_number"),
+    page: pageNumber,
+    per_page: perPage,
+    search: searchString.describe("Search by name, email, or id_number"),
     is_deleted: z.boolean().optional().describe("Include deleted clients"),
   },
   async ({ page, per_page, search, is_deleted }) => {

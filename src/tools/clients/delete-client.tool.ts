@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiDelete } from "../../client/api-client.js";
+import { hashedId } from "../../helpers/validation.js";
 
 const DeleteClientTool = createTool(
   "delete-client",
   "Delete a client from Invoice Ninja. This soft-deletes the client.",
   {
-    id: z.string().describe("The hashed client ID"),
+    id: hashedId.describe("The hashed client ID"),
   },
   async ({ id }) => {
     const response = await apiDelete<Record<string, unknown>>(`/clients/${id}`);

@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiGet } from "../../client/api-client.js";
+import { hashedId } from "../../helpers/validation.js";
 
 const GetPaymentTool = createTool(
   "get-payment",
   "Get a single payment by ID from Invoice Ninja.",
   {
-    id: z.string().describe("The hashed payment ID"),
+    id: hashedId.describe("The hashed payment ID"),
   },
   async ({ id }) => {
     const response = await apiGet<{ data: Record<string, unknown> }>(`/payments/${id}`, {
