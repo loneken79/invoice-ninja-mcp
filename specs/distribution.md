@@ -15,7 +15,7 @@ When I want to use this MCP server with Claude, I want a simple one-liner instal
 ## Core Concepts
 
 ### npx Distribution
-The package is installed directly from GitHub via `npx -y github:loneken79/invoice-ninja-mcp`. During installation, npm runs the repository `prepare` script to build `dist/index.js`, and the `bin` field points execution to that built file. The shebang (`#!/usr/bin/env node`) makes it directly executable. Users configure it as:
+The package is installed directly from GitHub via `npx -y github:loneken79/invoice-ninja-mcp` without requiring users to manually clone the repo or run build commands. During installation, npm runs the repository `prepare` script to build `dist/index.js`, and the `bin` field points execution to that built file. The shebang (`#!/usr/bin/env node`) makes it directly executable. Users configure it as:
 
 ```json
 {
