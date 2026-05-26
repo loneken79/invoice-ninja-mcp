@@ -38,11 +38,13 @@ function validatePath(path: string): void {
   for (const segment of segments) {
     // Reject any segment containing traversal patterns
     if (segment === "." || segment === ".." || segment.includes("/") || segment.includes("\\")) {
-      throw new Error(`Invalid path segment: "${segment}". Path traversal is not allowed.`);
+      throw new Error("Invalid path segment. Path traversal is not allowed.");
     }
     // Each segment must only contain safe characters (alphanumeric, hyphens, underscores)
     if (!/^[a-zA-Z0-9_\-]+$/.test(segment)) {
-      throw new Error(`Invalid path segment: "${segment}". Only alphanumeric characters, hyphens, and underscores are allowed.`);
+      throw new Error(
+        "Invalid path segment. Only alphanumeric characters, hyphens, and underscores are allowed.",
+      );
     }
   }
 }
