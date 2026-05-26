@@ -29,9 +29,8 @@ function getConfig(): ApiClientConfig {
 }
 
 /**
- * Validates that all dynamic segments in a path are safe (alphanumeric, hyphens, underscores).
+ * Validates that all path segments are safe (alphanumeric, hyphens, underscores).
  * Prevents path traversal attacks (e.g., ../../admin).
- * Static API segments (letters only) are allowed; dynamic IDs must be alphanumeric.
  */
 function validatePath(path: string): void {
   const segments = path.split("/").filter(Boolean);
