@@ -15,14 +15,14 @@ When I want to use this MCP server with Claude, I want a simple one-liner instal
 ## Core Concepts
 
 ### npx Distribution
-The package is installed directly from GitHub via `npx -y github:loneken79/invoice-ninja-mcp#v1.0.0`. During installation, npm runs the repository `prepare` script to build `dist/index.js`, and the `bin` field points execution to that built file. The shebang (`#!/usr/bin/env node`) makes it directly executable. Users configure it as:
+The package is installed directly from GitHub via `npx -y github:loneken79/invoice-ninja-mcp`. During installation, npm runs the repository `prepare` script to build `dist/index.js`, and the `bin` field points execution to that built file. The shebang (`#!/usr/bin/env node`) makes it directly executable. Users configure it as:
 
 ```json
 {
   "mcpServers": {
     "invoice-ninja": {
       "command": "npx",
-      "args": ["-y", "github:loneken79/invoice-ninja-mcp#v1.0.0"],
+      "args": ["-y", "github:loneken79/invoice-ninja-mcp"],
       "env": {
         "INVOICE_NINJA_URL": "https://your-instance.invoicing.co",
         "INVOICE_NINJA_API_TOKEN": "your_api_token_here"
