@@ -6,7 +6,7 @@ When I want to use this MCP server with Claude, I want a simple one-liner instal
 
 ## Success Criteria
 
-- Installable via `npx github:loneken79/invoice-ninja-mcp` one-liner in MCP config
+- Installable via `npx -y github:loneken79/invoice-ninja-mcp` one-liner in MCP config
 - Works with Claude Desktop, Claude Code, and Cursor
 - API credentials passed via environment variables in MCP config (not hardcoded)
 - README includes copy-pasteable config for all three clients
