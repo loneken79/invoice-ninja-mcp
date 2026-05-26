@@ -1,6 +1,6 @@
 import { ApiResponse } from "../helpers/types.js";
 import { formatError } from "../helpers/format-error.js";
-import { validateBaseUrl, validatePathSegment } from "../helpers/validation.js";
+import { validateBaseUrl } from "../helpers/validation.js";
 
 /** Request timeout in milliseconds (30 seconds) */
 const REQUEST_TIMEOUT_MS = 30_000;
@@ -31,12 +31,17 @@ function getConfig(): ApiClientConfig {
 /**
  * Validates that all dynamic segments in a path are safe (alphanumeric, hyphens, underscores).
  * Prevents path traversal attacks (e.g., ../../admin).
+ * Static API segments (letters only) are allowed; dynamic IDs must be alphanumeric.
  */
 function validatePath(path: string): void {
-  // Split path into segments and validate each dynamic part
   const segments = path.split("/").filter(Boolean);
   for (const segment of segments) {
-    if (!validatePathSegment(segment)) {
+    // Reject any segment containing traversal patterns
+    if (segment === "." || segment === ".." || segment.includes("/") || segment.includes("\\")) {
+      throw new Error(`Invalid path segment: "${segment}". Path traversal is not allowed.`);
+    }
+    // Each segment must only contain safe characters (alphanumeric, hyphens, underscores)
+    if (!/^[a-zA-Z0-9_\-]+$/.test(segment)) {
       throw new Error(`Invalid path segment: "${segment}". Only alphanumeric characters, hyphens, and underscores are allowed.`);
     }
   }

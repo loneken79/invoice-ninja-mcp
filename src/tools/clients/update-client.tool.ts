@@ -6,7 +6,7 @@ import { hashedId, optionalBoundedText, MAX_CONTACTS } from "../../helpers/valid
 const contactSchema = z.object({
   first_name: z.string().max(200).optional(),
   last_name: z.string().max(200).optional(),
-  email: z.string().email("Invalid email format").max(300).optional(),
+  email: z.string().email("Invalid email format").max(300).or(z.literal("")).optional(),
   phone: z.string().max(100).optional(),
   send_email: z.boolean().optional(),
 });
@@ -21,7 +21,7 @@ const UpdateClientTool = createTool(
     id_number: z.string().max(200).optional().describe("Client reference number"),
     vat_number: z.string().max(200).optional().describe("VAT/tax number"),
     phone: z.string().max(100).optional().describe("Company phone"),
-    website: z.string().url("Invalid URL format").max(500).optional().describe("Client website"),
+    website: z.string().url("Invalid URL format").max(500).or(z.literal("")).optional().describe("Client website"),
     address1: z.string().max(500).optional().describe("Street address line 1"),
     address2: z.string().max(500).optional().describe("Street address line 2"),
     city: z.string().max(200).optional().describe("City"),

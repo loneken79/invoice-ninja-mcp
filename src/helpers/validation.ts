@@ -10,10 +10,14 @@ export const hashedId = z
   .string()
   .regex(/^[a-zA-Z0-9]+$/, "Invalid ID format: must be alphanumeric");
 
-/** Validates a date string in YYYY-MM-DD format */
+/** Validates a date string in YYYY-MM-DD format with calendar validity check */
 export const dateString = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format: must be YYYY-MM-DD");
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format: must be YYYY-MM-DD")
+  .refine((val) => {
+    const d = new Date(val + "T00:00:00Z");
+    return !isNaN(d.getTime()) && d.toISOString().startsWith(val);
+  }, "Invalid calendar date");
 
 /** Pagination per_page with upper bound to prevent resource exhaustion */
 export const perPage = z
@@ -40,8 +44,8 @@ export const boundedText = (maxLength = 10000) =>
 export const optionalBoundedText = (maxLength = 10000) =>
   z.string().max(maxLength).optional();
 
-/** Positive number (for amounts) */
-export const positiveAmount = z.number().min(0, "Amount must be non-negative");
+/** Non-negative number (for amounts - zero or greater) */
+export const nonNegativeAmount = z.number().min(0, "Amount must be non-negative");
 
 /** Search/filter string with reasonable length */
 export const searchString = z.string().max(500).optional();

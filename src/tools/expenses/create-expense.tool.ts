@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { createTool } from "../../helpers/create-tool.js";
 import { apiPost } from "../../client/api-client.js";
-import { hashedId, positiveAmount, dateString, optionalBoundedText } from "../../helpers/validation.js";
+import { hashedId, nonNegativeAmount, dateString, optionalBoundedText } from "../../helpers/validation.js";
 
 const CreateExpenseTool = createTool(
   "create-expense",
   "Create a new expense record in Invoice Ninja. Optionally link to a client, vendor, or invoice for billable expense tracking.",
   {
-    amount: positiveAmount.describe("Expense amount"),
+    amount: nonNegativeAmount.describe("Expense amount"),
     client_id: hashedId.optional().describe("Link to client hashed ID"),
     vendor_id: hashedId.optional().describe("Link to vendor hashed ID"),
     category_id: hashedId.optional().describe("Expense category ID"),
